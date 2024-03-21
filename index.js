@@ -1,39 +1,21 @@
 const express = require("express");
-const { Client, LocalAuth } = require("whatsapp-web.js");
-const bodyParser = require("body-parser");
-
 const app = express();
-const PORT = 3000;
+const PORT = 8000;
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const client = require("./utils/whatsapp-web");
+const router = require("./routers/send-otp");
+const corsOptions = {
+	origin: "http://localhost:3000",
+	methods: "GET,POST",
+};
 
-const qrcode = require("qrcode-terminal");
-
-const client = new Client({
-	authStrategy: new LocalAuth(),
-});
-
-client.on("ready", () => {
-	console.log("Client is ready!");
-});
-
-client.on("qr", (qr) => {
-	qrcode.generate(qr, { small: true });
-});
-
+app.use(cors(corsOptions));
 client.initialize();
 
 app.use(bodyParser.json());
 
-app.post("/send-message", (req, res) => {
-	// const { recipient, message } = req.body;
-	client
-		.sendMessage("916006120579@c.us", "test")
-		.then(() => {
-			res.status(200).send("Message sent successfully");
-		})
-		.catch((error) => {
-			res.status(500).send("Failed to send message: " + error);
-		});
-});
+app.use("/", router);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
