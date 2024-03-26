@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { sendOtp } = require("../controllers/send-otp");
+const { sendOtp } = require("../controllers/sendOtp");
 
 router.post("/send-otp", sendOtp);
 
