@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  phoneNumber   String?   @unique
+  accounts      Account[]
+  Group         Group[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model verificationToken {
+  id          String   @id @default(cuid())
+  email       String?
+  phoneNumber String?
+  token       String   @unique
+  expirers    DateTime
+
+  @@unique([email, token, phoneNumber])
+}
+
+model Group {
+  id               String      @id @default(cuid())
+  adminPhoneNumber String
+  userId           String
+  groupName        String
+  icon             String?
+  warningPerUser   String?
+  removeUser       String?
+  toleranceLevel   String?
+  user             User        @relation(fields: [adminPhoneNumber], references: [phoneNumber], onDelete: Cascade)
+  GroupUser        GroupUser[]
+
+  @@unique([id, groupName])
+}
+
+model GroupUser {
+  id           String @id @default(cuid())
+  groupId      String
+  whatsAppid   String
+  warningCount String
+  Group        Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
