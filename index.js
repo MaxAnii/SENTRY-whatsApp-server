@@ -18,19 +18,6 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.use("/", router);
-app.get("/", async (req, res) => {
-	try {
-		const groupDetails = await db.group.findMany({
-			where: {
-				groupName: "Test",
-			},
-		});
-		console.log(groupDetails);
-		res.json(groupDetails);
-	} catch (error) {
-		console.log(error.message);
-	}
-});
 client.on("message", async (msg) => {
 	parseMessage(msg);
 
