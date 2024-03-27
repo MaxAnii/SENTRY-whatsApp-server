@@ -1,21 +1,17 @@
-const client = require("../utils/whatsapp-web");
 const checkMessageToxicity = require("./checkMessageToxicity");
 const getGroupDetails = require("./getGroupDetails");
 const getGroupMetaData = require("./getGroupMetaData");
-const warnUser = require("./warnUser");
+const performUserAction = require("./performUserAction");
 
 const parseMessage = async (msg) => {
 	try {
 		const chat = await msg.getChat();
-		console.log(msg);
 		const { message, sender, groupName, adminList } = await getGroupMetaData(
 			msg
 		);
-		console.log({ message, sender, groupName, adminList });
-		// check if user is admin
-		// if (adminList.includes(sender.slice(0, 12))) {
-		// 	return;
-		// }
+		if (adminList.includes(sender.slice(0, 12))) {
+			return;
+		}
 		const groupConfigDetails = await getGroupDetails(groupName, adminList);
 
 		const isMessageToxic = await checkMessageToxicity(
@@ -30,15 +26,11 @@ const parseMessage = async (msg) => {
 				warningPerUser: groupConfigDetails[0].warningPerUser,
 			};
 			msg.delete(true);
-			const removeUser = await warnUser({ ...data });
-			if (true) {
-				await chat.removeParticipant([msg.from]);
-				// remove the user from group
+			const removeUser = await performUserAction({ ...data });
+			if (removeUser && getGroupDetails[0].removeUser === "1") {
+				await chat.removeParticipants([msg.author]);
 			}
-			// client.searchMessages(sender, "this is warning");
 		}
-
-		return isMessageToxic;
 	} catch (error) {
 		console.log(error.message);
 	}
