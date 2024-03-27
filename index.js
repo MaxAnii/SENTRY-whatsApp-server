@@ -20,8 +20,6 @@ app.use(bodyParser.json());
 app.use("/", router);
 client.on("message", async (msg) => {
 	parseMessage(msg);
-
-	// chat.removeParticipants("916006120579");
 });
 client.initialize();
 app.listen(PORT, () => {
