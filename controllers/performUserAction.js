@@ -23,7 +23,6 @@ const performUserAction = async (data) => {
 				parseInt(UserDetails[0].warningCount) + 1
 			).toString();
 			await updateUserDetails(UserDetails[0].id, currentWarningCount);
-			return false;
 		} else {
 			await addUserTodb(groupId, whatsAppid);
 		}
