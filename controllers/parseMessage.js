@@ -6,6 +6,7 @@ const performUserAction = require("./performUserAction");
 const parseMessage = async (msg) => {
 	try {
 		const chat = await msg.getChat();
+		if (!chat.isGroup) return;
 		const { message, sender, groupName, adminList } = await getGroupMetaData(
 			msg
 		);
@@ -20,19 +21,19 @@ const parseMessage = async (msg) => {
 		);
 
 		if (isMessageToxic) {
+			msg.delete(true);
 			const data = {
 				whatsAppid: sender.slice(0, 12),
 				groupId: groupConfigDetails[0].id,
 				warningPerUser: groupConfigDetails[0].warningPerUser,
 			};
-			msg.delete(true);
-			const removeUser = await performUserAction({ ...data });
-			if (removeUser && getGroupDetails[0].removeUser === "1") {
+			const isWarningCountOver = await performUserAction({ ...data });
+			if (isWarningCountOver && groupConfigDetails[0].removeUser === "1") {
 				await chat.removeParticipants([msg.author]);
 			}
 		}
 	} catch (error) {
-		console.log(error.message);
+		console.log("error", error.message);
 	}
 };
 
