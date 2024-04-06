@@ -12,10 +12,16 @@ const checkMessageToxicity = async (message, toleranceLevel) => {
 				content: prompt(message),
 			},
 		],
-		model: "gpt-3.5-turbo",
+		model: "gpt-4",
+		temperature: 0.3,
 	});
-	const score = completion.choices[0].message.content.slice(-1);
+
+	console.log("Message ", completion.choices[0].message.content);
+	const score = parseInt(
+		completion.choices[0].message.content.split("@")[1].trim()
+	);
+	console.log("SCORE => ", score);
+
 	return score >= toleranceLevel;
 };
-
 module.exports = checkMessageToxicity;
