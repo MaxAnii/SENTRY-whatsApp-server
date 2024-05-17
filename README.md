@@ -25,3 +25,14 @@ To get started with Sentry, follow these steps:
    api_secret
     api_user
     ```
+    Make sure that the `DIRECT_URL` is the db URL, which is the same in the [SENTRY](https://github.com/MaxAnii/sentry).
+   
+    `api_secret` & `api_user` are the keys from the [sigth engine](https://sightengine.com/).
+4. **Configure SENTRY BOT**: Scan the QR code generated on the terminal, which will automate the your WhatsApp account and this account will act as SENTRY bot.
+5. **Protect Group**: Add your automated SENTRY bot into the groups as an admin which you want to protect and configure the message tolerance level from the dashboard.
+
+## Support
+
+By [Ansar](https://github.com/MaxAnii) with ❤️.
+
+Feel free to open an issue or use this as your project!
